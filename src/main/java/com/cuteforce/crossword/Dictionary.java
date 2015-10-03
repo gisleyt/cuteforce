@@ -23,6 +23,15 @@ public class Dictionary {
             this.daughterFreq = new AtomicInteger(1);
         }
 
+        /**
+         * Root node.
+         */
+        public Node() {
+            this.letter = null;
+            this.daughters = Maps.newHashMap();
+            this.daughterFreq = new AtomicInteger(1);
+        }
+
         public void inject(String suffix) {
             this.daughterFreq.incrementAndGet();
             if (suffix.isEmpty()) {
@@ -44,22 +53,14 @@ public class Dictionary {
                 return this.daughterFreq.get();
             } else {
                 Node daughterNode = this.daughters.get(prefix.charAt(0));
-                if (daughterNode == null) {
-                    return 0;
-                } else {
-                    return daughterNode.getFrequency(prefix.substring(1));
-                }
+                return (daughterNode == null) ? 0 : daughterNode.getFrequency(prefix.substring(1));
             }
         }
 
         public Node getNode(String prefix) {
             Node daughter = this.daughters.get(prefix.charAt(0));
             prefix = prefix.substring(1);
-            if (prefix.isEmpty()) {
-                return daughter;
-            } else {
-                return daughter.getNode(prefix);
-            }
+            return  (prefix.isEmpty() || daughter == null) ? daughter : daughter.getNode(prefix);
         }
     }
 
@@ -72,7 +73,7 @@ public class Dictionary {
      * etc
      */
     public Dictionary(int size, File dictionaryName) throws IOException {
-        this.root = new Node('!');
+        this.root = new Node();
         Files.lines(dictionaryName.toPath(), Charsets.UTF_8)
             .flatMap(Pattern.compile("\\.")::splitAsStream)
             .map(String::toLowerCase)
