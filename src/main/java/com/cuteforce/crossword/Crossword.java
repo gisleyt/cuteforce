@@ -2,7 +2,6 @@ package com.cuteforce.crossword;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
-import com.google.common.collect.Lists;
 
 import com.cuteforce.crossword.Dictionary.Node;
 
