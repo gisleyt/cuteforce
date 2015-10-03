@@ -97,8 +97,8 @@ public class Dictionary {
                     .reduce(0, (first, second) -> first + second);
 
             node.daughters.entrySet()
-            .stream()
-            .forEach(entry -> probMap.put(entry.getKey(), entry.getValue().daughterFreq.get() / totalFreq));
+                .stream()
+                .forEach(entry -> probMap.put(entry.getKey(), entry.getValue().daughterFreq.get() / totalFreq));
         }
         return probMap;
     }
