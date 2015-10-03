@@ -15,7 +15,7 @@ public class TestCrossword {
     public void testCrossword() throws IOException {
         int size = 7;
         Crossword cw = new Crossword(size, new File(Resources.getResource(TestCrossword.class, "lemmatization.txt").getFile()));
-        String grid = cw.solve();
+        String grid = cw.solve(true);
         for (int i = 0; i < grid.length(); i++) {
             if (i % size == 0) {
                 System.out.print("\n");

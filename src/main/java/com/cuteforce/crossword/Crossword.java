@@ -46,12 +46,19 @@ public class Crossword {
     /**
      * Find a crossword of the given size.
      */
-    public String solve() {
+    public String solve(boolean debug) {
         Node failedPaths = new Node();
         String letters = "";
+        int backtracks = 0;
+        long start = System.currentTimeMillis();
         while (letters.length() < this.size * this.size) {
             Character nextLetter = getNextLetter(letters, failedPaths);
             if (nextLetter == null) {
+                if (debug && ++backtracks % 100000 == 0) {
+                    long now = System.currentTimeMillis();
+                    System.err.println("Total backtracks " + backtracks + ". " + (double) backtracks / ((now - start) / 1000.0) + " backtracks per second.");
+                    System.err.println("Failed path " + letters);
+                }
                 failedPaths.inject(letters.toString());
                 if (letters.length() > 0) {
                     letters = letters.substring(0, letters.length() - 1);
