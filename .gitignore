@@ -1,0 +1,54 @@
+META-INF
+reports
+target
+test-output
+var
+
+# Eclipse project files
+.classpath
+.project
+.settings
+.checkstyle
+.metadata
+.recommenders
+
+# IDEA project files
+*.iml
+*.ipr
+*.iws
+.idea
+
+# Emacs backup files
+*~
+
+# vim temporary files
+*.sw[g-z]
+
+# Python
+*.pyc
+
+# Other rubbish
+velocity.log
+
+# Dist folder where deployable builds are created
+dist
+
+# Version ID which is generated during build
+services/search/src/main/resources/git-version.properties
+/.idea
+
+# OSX fs metadata
+.DS_Store
+
+# Node.js files
+node_modules
+npm-debug.log
+
+# Build folders
+.do_built
+.do_built.dir
+.redo
+
+#Sass
+.sass-cache
+style.tmp
