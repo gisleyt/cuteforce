@@ -2,6 +2,7 @@ package com.cuteforce.crossword;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
+import com.google.common.io.Resources;
 
 import com.cuteforce.crossword.Dictionary.Node;
 
@@ -97,5 +98,18 @@ public class Crossword {
             }
         }
         return null;
+    }
+
+    public static void main(String[] args) throws IOException {
+        int size = Integer.parseInt(args[1]);
+        Crossword cw = new Crossword(size, new File(args[0]));
+        String grid = cw.solve(true);
+        for (int i = 0; i < grid.length(); i++) {
+            if (i % size == 0) {
+                System.out.print("\n");
+            }
+            System.out.print(grid.charAt(i));
+        }
+        System.out.print("\n");
     }
 }
