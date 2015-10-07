@@ -22,6 +22,15 @@ public class TestCrossword {
         Assert.assertEquals(grid, "starstarotantueagutitosen");
     }
 
+
+    @Test
+    public void testgrid() throws IOException {
+        Grid grid = new Grid(5, new Dictionary(5, new File(Resources.getResource(TestCrossword.class, "lemmatization.txt").getFile())));
+        if (grid.solve() != null) {
+            grid.prettyPrint();
+        }
+    }
+
     @Test
     public void testSolve() throws IOException {
         int size = 7;
