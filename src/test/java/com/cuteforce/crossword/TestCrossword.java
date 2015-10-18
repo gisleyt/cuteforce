@@ -31,10 +31,22 @@ public class TestCrossword {
         }
     }
 
+    /**
+     * Valid crossword:
+     *
+     * abstehst
+     * bleirote
+     * sellerie
+     * tilsiter
+     * ereifere
+     * horteten
+     * stierend
+     * teerende
+     */
     @Test
     public void testSolve() throws IOException {
         int size = 8;
-        Crossword cw = new Crossword(size, 10000000, new File(Resources.getResource(TestCrossword.class, "lemmatization.txt").getFile()));
+        Crossword cw = new Crossword(size, 100000000, new File(Resources.getResource(TestCrossword.class, "lemmatization.txt").getFile()));
         String grid = cw.solve(true);
 
         for (int i = 0; i < grid.length(); i++) {
