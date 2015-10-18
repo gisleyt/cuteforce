@@ -93,8 +93,8 @@ public class Dictionary {
         if (node != null) {
             double totalFreq = node.daughters.entrySet()
                     .stream()
-                    .map(entry -> entry.getValue().daughterFreq.get())
-                    .reduce(0, (first, second) -> first + second);
+                    .mapToInt(entry -> entry.getValue().daughterFreq.get())
+                    .sum();
 
             node.daughters.entrySet()
                 .stream()

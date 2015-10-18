@@ -8,11 +8,9 @@ import com.google.common.hash.Funnels;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 public class Crossword {
 
@@ -76,7 +74,7 @@ public class Crossword {
         return letters;
     }
 
-    private Character getNextLetter(String letters, BloomFilter<String> failedPaths) {
+    private Character getNextLetter(final String letters, BloomFilter<String> failedPaths) {
         int prefix = letters.length() % this.size;
         Map<Character, Double> horizontalProbs = this.dictionary.getProb(letters.substring(letters.length() - prefix), this.size);
         String vertical = "";
@@ -87,19 +85,14 @@ public class Crossword {
         }
 
         Map<Character, Double> verticalProbs = this.dictionary.getProb(vertical, this.size);
-        List<LetterProb> letterProbabilities = horizontalProbs.keySet()
+        Optional<LetterProb> letterIfFound = horizontalProbs.keySet()
             .stream()
             .map(letter -> new LetterProb(horizontalProbs.get(letter) * MoreObjects.firstNonNull(verticalProbs.get(letter), 0.0), letter))
             .filter(letterProb -> letterProb.probability > 0.0)
-            .collect(Collectors.toList());
-
-        Collections.sort(letterProbabilities, LetterProb.LETTERPROB_COMPARATOR);
-        for (LetterProb lp : letterProbabilities) {
-            if (!failedPaths.mightContain(letters + lp.character.toString())) {
-                return lp.character;
-            }
-        }
-        return null;
+            .sorted(LetterProb.LETTERPROB_COMPARATOR)
+            .filter(letterProb -> !failedPaths.mightContain(letters + letterProb.character))
+            .findFirst();
+        return (letterIfFound.isPresent() ? letterIfFound.get().character : null);
     }
 
     public static void main(String[] args) throws IOException {
