@@ -1,14 +1,17 @@
 package com.cuteforce.crossword;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Dictionary {
 
@@ -83,23 +86,17 @@ public class Dictionary {
     }
 
     public Map<Character, Double> getProb(String prefix) {
-        Map<Character, Double> probMap = Maps.newHashMap();
-        Node node;
-        if (prefix.equals("")) {
-            node = this.root;
-        } else {
-            node = this.root.getNode(prefix);
-        }
+        Node node = prefix.equals("") ? this.root : this.root.getNode(prefix);
         if (node != null) {
             double totalFreq = node.daughters.entrySet()
                     .stream()
                     .mapToInt(entry -> entry.getValue().daughterFreq.get())
                     .sum();
 
-            node.daughters.entrySet()
+            return node.daughters.entrySet()
                 .stream()
-                .forEach(entry -> probMap.put(entry.getKey(), entry.getValue().daughterFreq.get() / totalFreq));
+                .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().daughterFreq.get() / totalFreq));
         }
-        return probMap;
+        return ImmutableMap.of();
     }
 }
