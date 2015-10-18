@@ -4,13 +4,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Stream;
 
 public class BruteForceCrossword {
 
     private int size;
     private Dictionary dictionary;
-    private AtomicInteger backtracks = new AtomicInteger();
+    private AtomicLong deadends = new AtomicLong();
+    private AtomicBoolean foundSolution = new AtomicBoolean(false);
     private long start;
 
     public BruteForceCrossword(int size, File dictionary) throws IOException {
@@ -20,29 +23,35 @@ public class BruteForceCrossword {
 
     public String solve(boolean debug) {
         this.start = System.currentTimeMillis();
-        return solve("", debug);
+        String solution = solve("", debug);
+        System.err.println("Finished computing in " + (System.currentTimeMillis() - this.start) / 1000 + " seconds");
+        return solution;
     }
 
     /**
      * Find a crossword of the given size.
      */
     private String solve(String letters, boolean debug) {
-        if (letters.length() < this.size * this.size) {
+        if (this.foundSolution.get()) {
+            return null;
+        } else if (letters.length() < this.size * this.size) {
             List<Character> nextLetters = this.dictionary.getPlausibleNextChars(getHorizontal(letters), getVertical(letters));
-            Optional<String> solution = nextLetters.parallelStream()
+            Stream<Character> stream = letters.length() == 0 ? nextLetters.parallelStream() : nextLetters.stream();
+            Optional<String> solution = stream
                 .map(letter -> solve(letters + letter, debug))
                 .filter(letter -> letter != null)
-                .findFirst();
-                if (solution.isPresent()) {
-                    return solution.get();
-                } else {
-                    if (debug && this.backtracks.incrementAndGet() % 1000000 == 0) {
-                        long now = System.currentTimeMillis();
-                        System.err.println("Total backtracks " + backtracks + ". " + (double) backtracks.get() / ((now - start) / 1000.0) + " backtracks per second.");
-                        System.err.println("Failed path " + letters);
-                    }
-                    return null;
+                .findAny();
+            if (solution.isPresent()) {
+                this.foundSolution.set(true);
+                return solution.get();
+            } else {
+                if (debug && this.deadends.incrementAndGet() % 10000000 == 0) {
+                    long now = System.currentTimeMillis();
+                    System.err.println("Total deadends " + deadends + ". " + (double) deadends.get() / ((now - start) / 1000.0) + " deadends per second.");
+                    System.err.println("Failed path " + letters);
                 }
+                return null;
+            }
         } else {
             return letters;
         }
