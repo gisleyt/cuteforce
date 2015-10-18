@@ -1,12 +1,14 @@
 package com.cuteforce.crossword;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -84,6 +86,18 @@ public class Dictionary {
             .filter(word -> word.length() == size)
             .forEach(word -> this.root.inject(word));
     }
+
+    public List<Character> getPlausibleNextChars(String prefix1, String prefix2) {
+        Node node1 = prefix1.equals("") ? this.root : this.root.getNode(prefix1);
+        Node node2 = prefix2.equals("") ? this.root : this.root.getNode(prefix2);
+        if (node1 == null || node2 == null) {
+            return ImmutableList.of();
+        } else {
+            return node1.daughters.keySet().stream()
+                .filter(nextChar -> node2.daughters.containsKey(nextChar))
+                .collect(Collectors.toList());
+            }
+        }
 
     public Map<Character, Double> getProb(String prefix) {
         Node node = prefix.equals("") ? this.root : this.root.getNode(prefix);
