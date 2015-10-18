@@ -1,9 +1,10 @@
 package com.cuteforce.crossword;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
-
-import com.cuteforce.crossword.Dictionary.Node;
+import com.google.common.hash.BloomFilter;
+import com.google.common.hash.Funnels;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +18,7 @@ public class Crossword {
 
     private int size;
     private Dictionary dictionary;
+    private long bloomfiltersize;
 
     public static class LetterProb {
         public final double probability;
@@ -38,16 +40,17 @@ public class Crossword {
         };
     }
 
-    public Crossword(int size, File dictionary) throws IOException {
+    public Crossword(int size, long bloomfilterSize,  File dictionary) throws IOException {
         this.size = size;
         this.dictionary = new Dictionary(size, dictionary);
+        this.bloomfiltersize = bloomfilterSize;
     }
 
     /**
      * Find a crossword of the given size.
      */
     public String solve(boolean debug) {
-        Node failedPaths = new Node();
+        BloomFilter<String> failedPaths = BloomFilter.create(Funnels.stringFunnel(Charsets.UTF_8), this.bloomfiltersize, 0.002);
         String letters = "";
         int backtracks = 0;
         long start = System.currentTimeMillis();
@@ -59,7 +62,7 @@ public class Crossword {
                     System.err.println("Total backtracks " + backtracks + ". " + (double) backtracks / ((now - start) / 1000.0) + " backtracks per second.");
                     System.err.println("Failed path " + letters);
                 }
-                failedPaths.inject(letters.toString());
+                failedPaths.put(letters.toString());
                 if (letters.length() > 0) {
                     letters = letters.substring(0, letters.length() - 1);
                     continue;
@@ -73,7 +76,7 @@ public class Crossword {
         return letters;
     }
 
-    private Character getNextLetter(String letters, Node failedPaths) {
+    private Character getNextLetter(String letters, BloomFilter<String> failedPaths) {
         int prefix = letters.length() % this.size;
         Map<Character, Double> horizontalProbs = this.dictionary.getProb(letters.substring(letters.length() - prefix), this.size);
         String vertical = "";
@@ -92,7 +95,7 @@ public class Crossword {
 
         Collections.sort(letterProbabilities, LetterProb.LETTERPROB_COMPARATOR);
         for (LetterProb lp : letterProbabilities) {
-            if (failedPaths.getNode(letters + lp.character.toString()) == null) {
+            if (!failedPaths.mightContain(letters + lp.character.toString())) {
                 return lp.character;
             }
         }
@@ -101,7 +104,8 @@ public class Crossword {
 
     public static void main(String[] args) throws IOException {
         int size = Integer.parseInt(args[1]);
-        Crossword cw = new Crossword(size, new File(args[0]));
+        long bloomfilterSize = Long.parseLong(args[2]);
+        Crossword cw = new Crossword(size, bloomfilterSize, new File(args[0]));
         String grid = cw.solve(true);
         for (int i = 0; i < grid.length(); i++) {
             if (i % size == 0) {

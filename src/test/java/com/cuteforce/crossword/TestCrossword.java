@@ -14,10 +14,10 @@ public class TestCrossword {
 
     @Test
     public void testCrossword() throws IOException {
-        Crossword cw = new Crossword(4, new File(Resources.getResource(TestCrossword.class, "lemmatization.txt").getFile()));
+        Crossword cw = new Crossword(4, 1000000, new File(Resources.getResource(TestCrossword.class, "lemmatization.txt").getFile()));
         String grid = cw.solve(true);
         Assert.assertEquals(grid, "sarsaloeroseseen");
-        cw = new Crossword(5, new File(Resources.getResource(TestCrossword.class, "lemmatization.txt").getFile()));
+        cw = new Crossword(5, 1000000, new File(Resources.getResource(TestCrossword.class, "lemmatization.txt").getFile()));
         grid = cw.solve(true);
         Assert.assertEquals(grid, "starstarotantueagutitosen");
     }
@@ -33,8 +33,8 @@ public class TestCrossword {
 
     @Test
     public void testSolve() throws IOException {
-        int size = 7;
-        Crossword cw = new Crossword(size, new File(Resources.getResource(TestCrossword.class, "lemmatization.txt").getFile()));
+        int size = 8;
+        Crossword cw = new Crossword(size, 10000000, new File(Resources.getResource(TestCrossword.class, "lemmatization.txt").getFile()));
         String grid = cw.solve(true);
 
         for (int i = 0; i < grid.length(); i++) {
