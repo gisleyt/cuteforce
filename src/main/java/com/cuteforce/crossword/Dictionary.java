@@ -82,7 +82,7 @@ public class Dictionary {
             .forEach(word -> this.root.inject(word));
     }
 
-    public Map<Character, Double> getProb(String prefix, int length) {
+    public Map<Character, Double> getProb(String prefix) {
         Map<Character, Double> probMap = Maps.newHashMap();
         Node node;
         if (prefix.equals("")) {

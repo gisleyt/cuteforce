@@ -76,7 +76,7 @@ public class Crossword {
 
     private Character getNextLetter(final String letters, BloomFilter<String> failedPaths) {
         int prefix = letters.length() % this.size;
-        Map<Character, Double> horizontalProbs = this.dictionary.getProb(letters.substring(letters.length() - prefix), this.size);
+        Map<Character, Double> horizontalProbs = this.dictionary.getProb(letters.substring(letters.length() - prefix));
         String vertical = "";
         int currentIdx = prefix;
         while (currentIdx < letters.length()) {
@@ -84,7 +84,7 @@ public class Crossword {
             currentIdx += this.size;
         }
 
-        Map<Character, Double> verticalProbs = this.dictionary.getProb(vertical, this.size);
+        Map<Character, Double> verticalProbs = this.dictionary.getProb(vertical);
         Optional<LetterProb> letterIfFound = horizontalProbs.keySet()
             .stream()
             .map(letter -> new LetterProb(horizontalProbs.get(letter) * MoreObjects.firstNonNull(verticalProbs.get(letter), 0.0), letter))

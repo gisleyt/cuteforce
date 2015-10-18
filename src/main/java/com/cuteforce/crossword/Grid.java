@@ -123,12 +123,12 @@ public class Grid {
 
     private Character getNext() {
         List<Character> row = this.rows.get(this.v);
-        Map<Character, Double> horizontalProbs = this.dictionary.getProb(Joiner.on("").join(row.subList(0, h)), this.size);
+        Map<Character, Double> horizontalProbs = this.dictionary.getProb(Joiner.on("").join(row.subList(0, h)));
         String vPrefix = this.rows.stream()
                 .limit(this.v)
                 .map(list -> list.get(this.h).toString())
                 .reduce("", (first, second) -> first + second);
-        Map<Character, Double> verticalProbs = this.dictionary.getProb(vPrefix, this.size);
+        Map<Character, Double> verticalProbs = this.dictionary.getProb(vPrefix);
 
         List<LetterProb> letterProbabilities = horizontalProbs.keySet()
                 .stream()
