@@ -100,12 +100,16 @@ public class Crossword {
         long bloomfilterSize = Long.parseLong(args[2]);
         Crossword cw = new Crossword(size, bloomfilterSize, new File(args[0]));
         String grid = cw.solve(true);
-        for (int i = 0; i < grid.length(); i++) {
-            if (i % size == 0) {
-                System.out.print("\n");
+        if (grid != null) {
+            for (int i = 0; i < grid.length(); i++) {
+                if (i % size == 0) {
+                    System.out.print("\n");
+                }
+                System.out.print(grid.charAt(i));
             }
-            System.out.print(grid.charAt(i));
+            System.out.print("\n");
+        } else {
+            System.err.println("No solution found.");
         }
-        System.out.print("\n");
     }
 }
