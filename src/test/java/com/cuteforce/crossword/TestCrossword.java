@@ -22,6 +22,32 @@ public class TestCrossword {
         Assert.assertEquals(grid, "starstarotantueagutitosen");
     }
 
+    /**
+     * Valid crossword (8 x 8):
+     *
+     * abberufe
+     * beinamen
+     * bitterst
+     * entgrate
+     * raerener
+     * umrangst
+     * festeste
+     * entertet
+     */
+    @Test
+    public void testBruteforceCrossword() throws IOException {
+        int size = 7;
+        BruteForceCrossword cw = new BruteForceCrossword(size, new File(Resources.getResource(TestCrossword.class, "lemmatization.txt").getFile()));
+        String grid = cw.solve(true);
+        Assert.assertEquals(grid, "aaretaladeligeredetetelementtitelteagenturletters");
+        for (int i = 0; i < grid.length(); i++) {
+            if (i % size == 0) {
+                System.out.print("\n");
+            }
+            System.out.print(grid.charAt(i));
+        }
+        System.out.print("\n");
+    }
 
     @Test
     public void testgrid() throws IOException {
