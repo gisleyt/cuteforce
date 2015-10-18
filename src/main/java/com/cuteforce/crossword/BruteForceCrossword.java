@@ -4,12 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class BruteForceCrossword {
 
     private int size;
     private Dictionary dictionary;
-    private int backtracks = 0;
+    private AtomicInteger backtracks = new AtomicInteger();
     private long start;
 
     public BruteForceCrossword(int size, File dictionary) throws IOException {
@@ -28,16 +29,16 @@ public class BruteForceCrossword {
     private String solve(String letters, boolean debug) {
         if (letters.length() < this.size * this.size) {
             List<Character> nextLetters = this.dictionary.getPlausibleNextChars(getHorizontal(letters), getVertical(letters));
-            Optional<String> solution = nextLetters.stream()
+            Optional<String> solution = nextLetters.parallelStream()
                 .map(letter -> solve(letters + letter, debug))
                 .filter(letter -> letter != null)
                 .findFirst();
                 if (solution.isPresent()) {
                     return solution.get();
                 } else {
-                    if (debug && ++this.backtracks % 1000000 == 0) {
+                    if (debug && this.backtracks.incrementAndGet() % 1000000 == 0) {
                         long now = System.currentTimeMillis();
-                        System.err.println("Total backtracks " + backtracks + ". " + (double) backtracks / ((now - start) / 1000.0) + " backtracks per second.");
+                        System.err.println("Total backtracks " + backtracks + ". " + (double) backtracks.get() / ((now - start) / 1000.0) + " backtracks per second.");
                         System.err.println("Failed path " + letters);
                     }
                     return null;
