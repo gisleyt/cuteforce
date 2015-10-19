@@ -59,13 +59,13 @@ public class BruteForceCrossword {
 
     private String getVertical(String letters) {
         int prefix = letters.length() % this.size;
-        String vertical = "";
+        StringBuilder builder = new StringBuilder();
         int currentIdx = prefix;
         while (currentIdx < letters.length()) {
-            vertical += letters.charAt(currentIdx);
+            builder.append(letters.charAt(currentIdx));
             currentIdx += this.size;
         }
-        return vertical;
+        return builder.toString();
     }
 
     private String getHorizontal(String letters) {
