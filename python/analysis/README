@@ -1,0 +1,4 @@
+The utils sessions.py and analyze.py can be used to parse out 
+statistics from certain types of event logs.
+
+Usage: $ sort -n events.csv | python sessions.py | python analyze.py
