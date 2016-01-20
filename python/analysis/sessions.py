@@ -10,12 +10,14 @@ viewing session for a user.
 Usage: $ sort -n events.csv | python sessions.py | python analyze.py
 '''
 
+
 class Session:
     def __init__(self, id, start):
         self.id = id
         self.start = start
         self.duration = 0
         self.episodes = []
+
 
 if __name__ == "__main__":
     current_user = Session('', 0)
@@ -31,7 +33,7 @@ if __name__ == "__main__":
             current_user = Session(line[0], int(line[2]))
 
         duration = int(line[3])
-        if (duration > 0):
+        if duration > 0:
             current_user.episodes.append('ep' + line[1][-3])
             current_user.duration += duration
 
