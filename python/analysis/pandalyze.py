@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import sys
 
 episode_map = {"KMTE20000114": "ep1",
                "KMTE20000214": "ep2",
@@ -90,7 +91,7 @@ def plot_continued_watching(df):
 
 
 if __name__ == "__main__":
-    views = pd.read_csv('/tmp/events.csv')
+    views = pd.read_csv(sys.argv[1])
     views = views[views.timeWithinVisit > 0]
     views.programId.replace(episode_map, inplace=True)
     plot_episode_views(views)
