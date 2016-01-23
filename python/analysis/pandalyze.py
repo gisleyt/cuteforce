@@ -90,6 +90,27 @@ def plot_continued_watching(df):
     plt.show()
 
 
+def plot_views_per_weekday(df):
+    """
+    Produce a graph for total number of views for each weekday, grouped by episode.
+    """
+    df['weekday'] = pd.to_datetime(df.visitStartTime, unit='s').apply(lambda x : x.weekday())
+    freq_df = views.groupby(['weekday', 'programId']).size().reset_index()
+    freq_df.rename(columns = {0: 'frequency'}, inplace = True)
+    episodes = []
+    # Assumes that all weekdays are present in the statistics.
+    days_of_week = range(7)
+    assert len(df.weekday.unique()) == len(days_of_week)
+    day_names = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+    for episode, group in freq_df.groupby(['programId']):
+        plt.plot(group['weekday'], group['frequency'])
+        plt.xticks(days_of_week, day_names)
+        episodes.append(episode)
+    plt.legend(episodes, loc='best')
+    plt.show()
+
+
+
 if __name__ == "__main__":
     views = pd.read_csv(sys.argv[1])
     views = views[views.timeWithinVisit > 0]
@@ -98,3 +119,4 @@ if __name__ == "__main__":
     plot_watched_seconds(views)
     plot_watched_episodes_in_session(views)
     plot_continued_watching(views)
+    plot_views_per_weekday(views)
