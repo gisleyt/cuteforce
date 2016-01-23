@@ -10,6 +10,13 @@ episode_map = {"KMTE20000114": "ep1",
                "KMTE20000514": "ep5",
                "KMTE20000614": "ep6"}
 
+weekdays = ["monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday"]
 
 def plot_episode_views(df):
     """
@@ -90,6 +97,43 @@ def plot_continued_watching(df):
     plt.show()
 
 
+def plot_views_per_hour_of_day_and_weekday(df):
+    """
+    Produce a graph for total number of views for each hour of day for each weekday, grouped by episode.
+    """
+    df['hour'] = pd.to_datetime(df.visitStartTime, unit='s').apply(lambda x: x.hour)
+    df['weekday'] = pd.to_datetime(df.visitStartTime, unit='s').apply(lambda x: x.weekday())
+    freq_df = views.groupby(['hour', 'weekday', 'programId']).size().reset_index()
+    freq_df.rename(columns = {0: 'frequency'}, inplace = True)
+    episodes = []
+    for (weekday, episode), group in freq_df.groupby(['weekday', 'programId']):
+        plt.plot(group['hour'], group['frequency'])
+        plt.axis([0, 24, 0, freq_df.frequency.max()])
+        episodes.append(episode)
+        if len(episodes) == len(freq_df.programId.unique()):
+            plt.legend(episodes, loc='best')
+            episodes = []
+            plt.title("Viewer on " + weekdays[weekday])
+            plt.show()
+
+
+def plot_views_per_hour_of_day(df):
+    """
+    Produce a graph for total number of views for each weekday, grouped by episode.
+    """
+    df['hour'] = pd.to_datetime(df.visitStartTime, unit='s').apply(lambda x : x.hour)
+    freq_df = views.groupby(['hour', 'programId']).size().reset_index()
+    freq_df.rename(columns = {0: 'frequency'}, inplace = True)
+    episodes = []
+    for episode, group in freq_df.groupby(['programId']):
+        plt.plot(group['hour'], group['frequency'])
+        episodes.append(episode)
+        plt.axis([0, 24, 0, freq_df.frequency.max()])
+        plt.xticks(range(24))
+    plt.legend(episodes, loc='best')
+    plt.show()
+
+
 def plot_views_per_weekday(df):
     """
     Produce a graph for total number of views for each weekday, grouped by episode.
@@ -110,7 +154,6 @@ def plot_views_per_weekday(df):
     plt.show()
 
 
-
 if __name__ == "__main__":
     views = pd.read_csv(sys.argv[1])
     views = views[views.timeWithinVisit > 0]
@@ -120,3 +163,5 @@ if __name__ == "__main__":
     plot_watched_episodes_in_session(views)
     plot_continued_watching(views)
     plot_views_per_weekday(views)
+    plot_views_per_hour_of_day(views)
+    plot_views_per_hour_of_day_and_weekday(views)
