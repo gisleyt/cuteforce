@@ -18,6 +18,7 @@ weekdays = ["monday",
             "saturday",
             "sunday"]
 
+
 def plot_episode_views(df):
     """
     Visualize the proportion of users who watched the entire episode.
@@ -104,7 +105,7 @@ def plot_views_per_hour_of_day_and_weekday(df):
     df['hour'] = pd.to_datetime(df.visitStartTime, unit='s').apply(lambda x: x.hour)
     df['weekday'] = pd.to_datetime(df.visitStartTime, unit='s').apply(lambda x: x.weekday())
     freq_df = views.groupby(['hour', 'weekday', 'programId']).size().reset_index()
-    freq_df.rename(columns = {0: 'frequency'}, inplace = True)
+    freq_df.rename(columns={0: 'frequency'}, inplace=True)
     episodes = []
     for (weekday, episode), group in freq_df.groupby(['weekday', 'programId']):
         plt.plot(group['hour'], group['frequency'])
@@ -124,9 +125,9 @@ def plot_views_per_hour_of_day(df):
     """
     Produce a graph for total number of views for each weekday, grouped by episode.
     """
-    df['hour'] = pd.to_datetime(df.visitStartTime, unit='s').apply(lambda x : x.hour)
+    df['hour'] = pd.to_datetime(df.visitStartTime, unit='s').apply(lambda x: x.hour)
     freq_df = views.groupby(['hour', 'programId']).size().reset_index()
-    freq_df.rename(columns = {0: 'frequency'}, inplace = True)
+    freq_df.rename(columns={0: 'frequency'}, inplace=True)
     episodes = []
     for episode, group in freq_df.groupby(['programId']):
         plt.plot(group['hour'], group['frequency'])
@@ -143,9 +144,9 @@ def plot_views_per_weekday(df):
     """
     Produce a graph for total number of views for each weekday, grouped by episode.
     """
-    df['weekday'] = pd.to_datetime(df.visitStartTime, unit='s').apply(lambda x : x.weekday())
+    df['weekday'] = pd.to_datetime(df.visitStartTime, unit='s').apply(lambda x: x.weekday())
     freq_df = views.groupby(['weekday', 'programId']).size().reset_index()
-    freq_df.rename(columns = {0: 'frequency'}, inplace = True)
+    freq_df.rename(columns={0: 'frequency'}, inplace=True)
     episodes = []
     # Assumes that all weekdays are present in the statistics.
     days_of_week = range(7)
