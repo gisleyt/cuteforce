@@ -21,14 +21,13 @@ weekdays = ["Monday",
 
 def plot_episode_views(df):
     """
-    Visualize the proportion of users who watched the entire episode.
+    Plot the number of viewers per episode.
     """
     viewers = df.groupby("programId").userId.nunique()
     fig, ax = plt.subplots(1, 1)
     ax.get_xaxis().set_visible(False)
     viewers.plot(table=True, kind='bar')
     plt.title("Viewers per episode")
-    plt.savefig("/tmp/viewer_per_episode.png")
     plt.show()
 
 
