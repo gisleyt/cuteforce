@@ -114,6 +114,9 @@ def plot_views_per_hour_of_day_and_weekday(df):
             plt.legend(episodes, loc='best')
             episodes = []
             plt.title("Viewer on " + weekdays[weekday])
+            plt.xlabel('Hour of day (UTC)')
+            plt.ylabel('Number of viewers')
+            plt.xticks(range(24))
             plt.show()
 
 
@@ -129,6 +132,8 @@ def plot_views_per_hour_of_day(df):
         plt.plot(group['hour'], group['frequency'])
         episodes.append(episode)
         plt.axis([0, 24, 0, freq_df.frequency.max()])
+        plt.xlabel('Hour of day (UTC)')
+        plt.ylabel('Number of viewers')
         plt.xticks(range(24))
     plt.legend(episodes, loc='best')
     plt.show()
@@ -147,6 +152,8 @@ def plot_views_per_weekday(df):
     assert len(df.weekday.unique()) == len(days_of_week)
     day_names = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
     for episode, group in freq_df.groupby(['programId']):
+        plt.ylabel('Number of viewers')
+        plt.xlabel('Day of week (UTC)')
         plt.plot(group['weekday'], group['frequency'])
         plt.xticks(days_of_week, day_names)
         episodes.append(episode)
