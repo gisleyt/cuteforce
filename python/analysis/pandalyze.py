@@ -10,13 +10,13 @@ episode_map = {"KMTE20000114": "ep1",
                "KMTE20000514": "ep5",
                "KMTE20000614": "ep6"}
 
-weekdays = ["monday",
-            "tuesday",
-            "wednesday",
-            "thursday",
-            "friday",
-            "saturday",
-            "sunday"]
+weekdays = ["Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"]
 
 
 def plot_episode_views(df):
@@ -151,12 +151,11 @@ def plot_views_per_weekday(df):
     # Assumes that all weekdays are present in the statistics.
     days_of_week = range(7)
     assert len(df.weekday.unique()) == len(days_of_week)
-    day_names = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
     for episode, group in freq_df.groupby(['programId']):
         plt.ylabel('Number of viewers')
         plt.xlabel('Day of week (UTC)')
         plt.plot(group['weekday'], group['frequency'])
-        plt.xticks(days_of_week, day_names)
+        plt.xticks(days_of_week, weekdays)
         episodes.append(episode)
     plt.legend(episodes, loc='best')
     plt.show()
