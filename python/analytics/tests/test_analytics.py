@@ -14,23 +14,12 @@ class TestAnalyticsServer(unittest.TestCase):
         self.app = analytics_server.app.test_client()
 
     def test_timestamp(self):
-        dt = datetime.datetime.fromtimestamp(1400000000)
-        assert(analytics_server.get_hours_from_epoch(dt) == 388888)
-
-        dt = datetime.datetime.fromtimestamp(60)
-        assert(analytics_server.get_hours_from_epoch(dt) == 0)
-
-        dt = datetime.datetime.fromtimestamp(3599)
-        assert (analytics_server.get_hours_from_epoch(dt) == 0)
-
-        dt = datetime.datetime.fromtimestamp(3600)
-        assert (analytics_server.get_hours_from_epoch(dt) == 1)
-
-        dt = datetime.datetime.fromtimestamp(7100)
-        assert (analytics_server.get_hours_from_epoch(dt) == 1)
-
-        dt = datetime.datetime.fromtimestamp(7200)
-        assert (analytics_server.get_hours_from_epoch(dt) == 2)
+        assert(analytics_server.get_hours_from_epoch(1400000000000) == 388888)
+        assert(analytics_server.get_hours_from_epoch(60000) == 0)
+        assert (analytics_server.get_hours_from_epoch(3599000) == 0)
+        assert (analytics_server.get_hours_from_epoch(3600000) == 1)
+        assert (analytics_server.get_hours_from_epoch(7100000) == 1)
+        assert (analytics_server.get_hours_from_epoch(7200000) == 2)
 
     def test_request_validation(self):
 

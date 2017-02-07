@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import datetime
 import sys
 
 import fakeredis
@@ -33,24 +32,19 @@ def connect_redis():
     return r
 
 
-def get_hours_from_epoch(dt):
-    return int((dt.timestamp() / 60) / 60)
-
-
-def get_datetime(request_args):
-    request_stamp = request_args.get('timestamp')
-    return datetime.datetime.fromtimestamp(int(request_stamp) / 1000)
+def get_hours_from_epoch(timestamp_ms):
+    return int(timestamp_ms / (1000 * 60 * 60))
 
 
 def persist(request_args):
-    dt = get_datetime(request_args)
-    db.redis_helper.persist(get_redis(), get_hours_from_epoch(dt), request_args)
+    timestamp_ms = int(request_args.get('timestamp'))
+    db.redis_helper.persist(get_redis(), get_hours_from_epoch(timestamp_ms), request_args)
     return 'ok', 200
 
 
 def get_data(request_args):
-    dt = get_datetime(request_args)
-    response_dict = db.redis_helper.get_data(get_redis(), get_hours_from_epoch(dt))
+    timestamp_ms = int(request_args.get('timestamp'))
+    response_dict = db.redis_helper.get_data(get_redis(), get_hours_from_epoch(timestamp_ms))
     return "\n".join(["unqiue_users," + response_dict["unqiue_users"],
                       "clicks," + response_dict["clicks"],
                       "impressions," + response_dict["impressions"]
