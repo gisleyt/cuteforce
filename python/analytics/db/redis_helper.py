@@ -1,7 +1,8 @@
 def get_data(r, hour_from_epoch):
-    unique_users = r.scard("users-" + str(hour_from_epoch))
-    clicks = r.get("click-" + str(hour_from_epoch))
-    imp = r.get("imp-" + str(hour_from_epoch))
+    hour_from_epoch_str = str(hour_from_epoch)
+    unique_users = r.scard("users-" + hour_from_epoch_str)
+    clicks = r.get("click-" + hour_from_epoch_str)
+    imp = r.get("imp-" + hour_from_epoch_str)
     if clicks is None:
         clicks = 0
     else:
@@ -17,9 +18,10 @@ def get_data(r, hour_from_epoch):
     return response
 
 
-def persist(r, hours_from_epoch, request_param):
+def persist(r, hour_from_epoch, request_param):
+    hour_from_epoch_str = str(hour_from_epoch)
     if 'click' in request_param:
-        r.incr("click-" + str(hours_from_epoch))
+        r.incr("click-" + hour_from_epoch_str)
     else:
-        r.incr("imp-" + str(hours_from_epoch))
-    r.sadd("users-" + str(hours_from_epoch), request_param.get("user"))
+        r.incr("imp-" + hour_from_epoch_str)
+    r.sadd("users-" + hour_from_epoch_str, request_param.get("user"))
