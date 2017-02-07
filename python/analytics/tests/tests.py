@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import unittest
 
 import request_validator
@@ -107,7 +105,3 @@ class TestAnalyticsServer(unittest.TestCase):
 
         res = self.app.get('/analytics?timestamp=3498')
         assert (res.status == '400 BAD REQUEST')
-
-
-if __name__ == '__main__':
-    unittest.main()

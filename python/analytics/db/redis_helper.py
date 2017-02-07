@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-
-
 def get_data(r, hour_from_epoch):
     unique_users = r.scard("users-" + str(hour_from_epoch))
     clicks = r.get("click-" + str(hour_from_epoch))
