@@ -53,7 +53,7 @@ class TestAnalyticsServer(unittest.TestCase):
         assert(not request_validator.validate_timestamp(datetime.datetime(1999, 1, 1).timestamp() * 1000))
         assert(not request_validator.validate_timestamp(datetime.datetime(2999, 1, 1).timestamp() * 1000))
 
-    def test_persistance(self):
+    def test_persistence(self):
         r = fakeredis.FakeStrictRedis()
         for hour_from_epoch in range(10):
             for j in range(100):
